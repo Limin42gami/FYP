@@ -1,0 +1,88 @@
+#OPENAI API USAGE
+import openai
+import os
+from openai import OpenAI
+
+client = OpenAI(
+  api_key="sk-proj-92korLeL7mvswWbJV9ozNw9KEmf_XKJDck8azyiVzljC-"
+  "-7vT3BlbkFJM8txLF7QXQSZh5J2cTkklH8bnJ_w0tI3J-D87O_27amonxQ2xO8-kaoPRZdk98Ru3bcVSXIcAA"
+)
+
+response = client.responses.create(
+  model="gpt-5-nano",
+  input="write a haiku about ai",
+  store=True,
+)
+
+print(response.output_text);
+
+#GEMINI API USAGE
+import os
+from google import genai
+
+# The client will automatically pick up the GEMINI_API_KEY from the environment
+try:
+    client = genai.Client()
+except Exception as e:
+    print(f"Error initializing client: {e}. Check if GEMINI_API_KEY is set correctly.")
+    exit()
+
+# Example: Generate a contextually relevant joke
+prompt = "Tell me a joke about a software developer who uses only Python for everything."
+
+response = client.models.generate_content(
+    model='gemini-2.5-flash', # Fast and capable for chat/humor tasks
+    contents=prompt
+)
+
+print(response.text)
+
+from google import genai
+
+# Replace 'YOUR_API_KEY_HERE' with the actual key you obtained from Google AI Studio
+YOUR_API_KEY = "AIzaSyCYfxCoY0jUMGivguj84kcaZggK4k9C17A" 
+
+# Initialize the client by passing the API key directly
+client = genai.Client(api_key=YOUR_API_KEY)
+
+# Example: Generate content with System Instruction for a funny persona
+response = client.models.generate_content(
+    model='gemini-2.5-flash',
+    contents='Why did the user choose a chatbot over a human?',
+    config={'system_instruction': 'You are a stand-up comedian bot. Respond to every user query with a witty, one-line, observational joke.'}
+)
+
+print(response.text)
+
+#DATASET DOWNLOAD
+# import kagglehub
+
+# # Download latest version
+# path = kagglehub.dataset_download("mohamedaminedhiab/humor-no-humour")
+
+# print("Path to dataset files:", path)
+
+# import kagglehub
+
+# # Download latest version
+# path = kagglehub.dataset_download("abhinavmoudgil95/short-jokes")
+
+# print("Path to dataset files:", path)
+
+# import kagglehub
+
+# # Download latest version
+# path = kagglehub.dataset_download("pavellexyr/the-reddit-irl-dataset")
+
+# print("Path to dataset files:", path)
+
+# import kagglehub
+
+# # Download latest version
+# path = kagglehub.dataset_download("eswarreddy12/family-guy-dialogues-with-various-lexicon-ratings")
+
+# print("Path to dataset files:", path)
+
+#data=pd.read_csv("../input/200k-short-texts-for-humor-detection/dataset.csv")
+
+#data
