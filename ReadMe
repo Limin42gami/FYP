@@ -1,0 +1,49 @@
+# Funny Chatbot - AI Humor Generator
+
+A web application that generates jokes about any topic using Google's Gemini AI model.
+
+## Quick Start
+
+1. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Set up API key**
+   ```bash
+   cp .env.example .env
+   ```
+   Add your Gemini API key to `.env` file.
+
+3. **Run the app**
+   ```bash
+   streamlit run app.py
+   ```
+
+## Usage
+
+Enter a topic (e.g., "cars", "programming") and click "Generate Joke" to get AI-generated humor.
+
+## Features
+
+- Generates jokes about any topic
+- Simple web interface
+- Multiple joke formats for variety
+- Secure API key management
+
+## Project Structure
+
+- `app.py` - Main Streamlit application
+- `funny_chatbot.py` - AI integration module
+- `requirements.txt` - Python dependencies
+- `.env.example` - API key template
+
+## Technology
+
+- **Frontend**: Streamlit
+- **AI**: Google Gemini Flash
+- **Language**: Python
+
+## Security
+
+API keys are stored in environment variables. Never commit `.env` files to version control.
