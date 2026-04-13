@@ -1,88 +1,151 @@
-#OPENAI API USAGE
-import openai
-import os
-from openai import OpenAI
-
-client = OpenAI(
-  api_key="sk-proj-92korLeL7mvswWbJV9ozNw9KEmf_XKJDck8azyiVzljC-"
-  "-7vT3BlbkFJM8txLF7QXQSZh5J2cTkklH8bnJ_w0tI3J-D87O_27amonxQ2xO8-kaoPRZdk98Ru3bcVSXIcAA"
-)
-
-response = client.responses.create(
-  model="gpt-5-nano",
-  input="write a haiku about ai",
-  store=True,
-)
-
-print(response.output_text);
-
-#GEMINI API USAGE
 import os
 from google import genai
+from dotenv import load_dotenv
 
-# The client will automatically pick up the GEMINI_API_KEY from the environment
-try:
-    client = genai.Client()
-except Exception as e:
-    print(f"Error initializing client: {e}. Check if GEMINI_API_KEY is set correctly.")
-    exit()
+# Load environment variables
+load_dotenv()
 
-# Example: Generate a contextually relevant joke
-prompt = "Tell me a joke about a software developer who uses only Python for everything."
+def initialize_client():
+    """Initialize the Gemini client with API key"""
+    api_key = os.getenv('GEMINI_API_KEY')
+    if not api_key:
+        raise ValueError("GEMINI_API_KEY environment variable is not set. Please set it in .env file.")
 
-response = client.models.generate_content(
-    model='gemini-2.5-flash', # Fast and capable for chat/humor tasks
-    contents=prompt
-)
+    return genai.Client(api_key=api_key)
 
-print(response.text)
+import random
 
-from google import genai
+def generate_joke(topic):
+    """
+    Generate a joke based on the user's topic using Google Gemini API
 
-# Replace 'YOUR_API_KEY_HERE' with the actual key you obtained from Google AI Studio
-YOUR_API_KEY = "AIzaSyCYfxCoY0jUMGivguj84kcaZggK4k9C17A" 
+    Args:
+        topic (str): The user's topic for joke generation
 
-# Initialize the client by passing the API key directly
-client = genai.Client(api_key=YOUR_API_KEY)
+    Returns:
+        str: Generated joke response
+    """
+    try:
+        client = initialize_client()
 
-# Example: Generate content with System Instruction for a funny persona
-response = client.models.generate_content(
-    model='gemini-2.5-flash',
-    contents='Why did the user choose a chatbot over a human?',
-    config={'system_instruction': 'You are a stand-up comedian bot. Respond to every user query with a witty, one-line, observational joke.'}
-)
+        # Dynamic joke structures to ensure variety
+        joke_structures = [
+            "QUESTION_ANSWER",      # Why did X...? Because Y.
+            "OBSERVATIONAL",        # You know what's funny about X?
+            "PUN_BASED",           # Wordplay and double meanings
+            "SITUATIONAL",         # Imagine if X happened...
+            "COMPARISON",          # X is like Y, but...
+            "PERSONIFICATION",     # If X could talk...
+            "HYPERBOLE",           # X is so [adjective] that...
+            "UNDERSTATEMENT",      # X is slightly [adjective]...
+            "RULE_OF_THREE",       # X, Y, and Z walk into a bar...
+            "TWIST_EXPECTATIONS"   # Everyone thinks X, but actually Y.
+        ]
 
-print(response.text)
+        selected_structure = random.choice(joke_structures)
 
-#DATASET DOWNLOAD
-# import kagglehub
+        # Advanced system instruction with variety enforcement
+        system_instruction = f"""
+        You are a versatile comedy genius who can create ANY type of humor flawlessly.
+        You have mastered every comedy format and can switch between them effortlessly.
+        NEVER use the same joke structure twice in a row - always vary your approach!
 
-# # Download latest version
-# path = kagglehub.dataset_download("mohamedaminedhiab/humor-no-humour")
+        TODAY'S FORMAT: {selected_structure}
 
-# print("Path to dataset files:", path)
+        COMEDY MASTERY RULES:
+        1. AVOID REPETITIVE PATTERNS - Never start multiple jokes with "I", "My", "Why did", etc.
+        2. STRUCTURAL VARIETY - Mix Q&A, observations, puns, stories, one-liners
+        3. PERSPECTIVE SHIFTING - Use different voices: narrator, character, expert, etc.
+        4. TIMING VARIATION - Some quick punchlines, others with more setup
+        5. THEMATIC DIVERSITY - Connect topics to unexpected domains
 
-# import kagglehub
+        JOKE STRUCTURES YOU MUST MASTER:
 
-# # Download latest version
-# path = kagglehub.dataset_download("abhinavmoudgil95/short-jokes")
+        🔹 QUESTION_ANSWER: "Why/What/How/When did [topic]...?" + clever answer
+        🔹 OBSERVATIONAL: "You know what I don't get about [topic]?" + insight
+        🔹 PUN_BASED: Play on words related to {topic}
+        🔹 SITUATIONAL: "Imagine a [topic] at a dinner party..." + scenario
+        🔹 COMPARISON: "[Topic] is like [unexpected thing] because..."
+        🔹 PERSONIFICATION: "If [topic] could talk, it would say..."
+        🔹 HYPERBOLE: "[Topic] is so [adjective] that..."
+        🔹 UNDERSTATEMENT: "[Topic] is a bit [mild adjective]..."
+        🔹 RULE_OF_THREE: "[Topic A], [Topic B], and [Topic] walk into..."
+        🔹 TWIST_EXPECTATIONS: "Everyone thinks [topic] is X, but actually..."
 
-# print("Path to dataset files:", path)
+        DIVERSITY MANDATES:
+        ✅ Vary sentence lengths (1-4 sentences max)
+        ✅ Switch between first-person and third-person perspectives
+        ✅ Use different openings: Questions, statements, scenarios, dialogues
+        ✅ Mix direct and indirect humor styles
+        ✅ Alternate between punchline endings and amusing observations
+        ✅ Include personal story formats occasionally for relatable humor
 
-# import kagglehub
+        PATTERNS TO USE IN MODERATION:
+        ⚠️ "I finally/tried/asked/bought..." - Great for relatable stories, but don't overuse
+        ⚠️ "My [family member/friend/pet]..." - Personal anecdotes can be hilarious when used sparingly
+        ⚠️ "You won't believe..." - Good for setup, but mix with other approaches
 
-# # Download latest version
-# path = kagglehub.dataset_download("pavellexyr/the-reddit-irl-dataset")
+        AVOID EXCESSIVE REPETITION:
+        ❌ Using the exact same starter pattern 3+ times in a row
+        ❌ Always defaulting to the same joke structure regardless of topic
+        ❌ Never switching between different comedy styles
 
-# print("Path to dataset files:", path)
+        CONTENT STANDARDS:
+        - Keep universally appropriate and clever
+        - Maximum 3 sentences unless absolutely necessary
+        - Every word must serve the humor
+        - No meta-commentary or joke explanations
 
-# import kagglehub
+        CHALLENGE: Create a {selected_structure} joke about {topic} that feels completely fresh and original!
+        """
 
-# # Download latest version
-# path = kagglehub.dataset_download("eswarreddy12/family-guy-dialogues-with-various-lexicon-ratings")
+        # Dynamic prompt based on selected structure
+        structure_prompts = {
+            "QUESTION_ANSWER": f"Create a clever question-and-answer joke about {topic}. Start with Why/What/How/When and deliver a surprising punchline.",
+            "OBSERVATIONAL": f"Create an observational comedy joke about {topic}. Start like you're noticing something funny about it.",
+            "PUN_BASED": f"Create a brilliant pun or wordplay joke about {topic}. Focus on clever language twists.",
+            "SITUATIONAL": f"Create a situational comedy joke about {topic}. Put it in an unexpected scenario.",
+            "COMPARISON": f"Create a comparison joke about {topic}. Compare it to something completely different.",
+            "PERSONIFICATION": f"Create a personification joke about {topic}. Imagine if it could talk or have feelings.",
+            "HYPERBOLE": f"Create a hyperbole joke about {topic}. Exaggerate something about it to absurd levels.",
+            "UNDERSTATEMENT": f"Create an understatement joke about {topic}. Downplay something obvious about it.",
+            "RULE_OF_THREE": f"Create a rule-of-three joke about {topic}. Use the classic three-item comedy structure.",
+            "TWIST_EXPECTATIONS": f"Create a joke about {topic} that twists common expectations."
+        }
 
-# print("Path to dataset files:", path)
+        enhanced_prompt = f"""
+        FORMAT: {selected_structure}
 
-#data=pd.read_csv("../input/200k-short-texts-for-humor-detection/dataset.csv")
+        {structure_prompts[selected_structure]}
 
-#data
+        CRITICAL: Make this completely different from typical joke patterns. Be original, surprising, and genuinely clever.
+
+        Topic: {topic}
+        """
+
+        response = client.models.generate_content(
+            model='gemini-flash-lite-latest',
+            contents=enhanced_prompt,
+            config={'system_instruction': system_instruction}
+        )
+
+        # Clean up the response
+        joke = response.text.strip()
+
+        # Remove any unwanted prefixes
+        if joke.startswith("Here's") or joke.startswith("Here is"):
+            joke = joke.split('\n', 1)[-1].strip()
+
+        return joke
+
+    except Exception as e:
+        # Varied fallback jokes to avoid repetition
+        fallback_jokes = [
+            "Why don't scientists trust atoms? Because they make up everything!",
+            "I told my computer I needed a break, and it said 'no problem, I'll go to sleep.'",
+            "Why did the scarecrow win an award? He was outstanding in his field!",
+            "I'm reading a book about anti-gravity. It's impossible to put down!",
+            "Did you hear about the mathematician who's afraid of negative numbers? He'll stop at nothing to avoid them!",
+            "Why don't eggs tell jokes? They'd crack each other up!"
+        ]
+        return random.choice(fallback_jokes)
